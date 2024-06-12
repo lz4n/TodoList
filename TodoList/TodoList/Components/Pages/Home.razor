@@ -1,7 +1,71 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+@using TodoList.Dto
 
-<h1>Hello, world!</h1>
+<PageTitle>Tareas</PageTitle>
+<p class="h1">Tareas</p>
 
-Welcome to your new app.
+<p class="h3">Nueva tarea</p>
+
+<div class="input-group input-group-sm mb-3">
+	<div class="input-group-prepend">
+		<span class="input-group-text" id="inputGroup-sizing-sm">Título</span>
+	</div>
+	<input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" @bind=todoModel.Title>
+</div>
+
+<div class="input-group input-group-sm mb-3">
+	<div class="input-group-prepend">
+		<span class="input-group-text" id="inputGroup-sizing-sm">Descripción</span>
+	</div>
+	<input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" @bind=todoModel.Description>
+</div>
+
+<Button class="btn btn-primary" @onclick="AddTodo">Añadir</Button><br>
+
+@if (todoList == null)
+{
+    <p><em>Loading...</em></p>
+} else
+{
+    <Button class="btn btn-primary" @onclick="RemoveSelectedTodos">Eliminar seleccionados</Button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th />
+
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>¿Bloqueado?</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (TodoDto todoDto in todoList)
+            {
+                <tr class="bg-light">
+                    <td><input type="checkbox" @bind=todoDto.IsSelected /></td>
+                    <td>@todoDto.Title</td>
+                    <td>@todoDto.Description</td>
+                    <td>@(todoDto.IsBlocked ? "Si" : "No")</td>
+                    <td><Button class="btn btn-primary" @onclick="() => NextPhase(todoDto)">@todoDto.Phase</Button></td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td />
+                <td />
+                <td>
+                    <button class="btn btn-outline-primary" disabled="@(!IsPrevPageAvailable)" @onclick=@(() => changePage(-1))>&lt;</button>
+                    <label>@(page)/@(totalPages)</label>
+                    <button class="btn btn-outline-primary" disabled="@(!IsNextPageAvailabe)" @onclick=@(() => changePage(1))>&gt;</button>
+                </td>
+                <td />
+                <td />
+            </tr>
+        </tfoot>
+    </table>
+
+}

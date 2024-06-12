@@ -2,9 +2,12 @@
 {
     public interface IRepositoryBase<TEntity>
     { 
-        List<TEntity> GetAll();
-        bool Create(TEntity entity);
-        bool Update(TEntity entity);
-        bool Delete(TEntity entity);
+        IEnumerable<TEntity> GetAll();
+        IEnumerable<TEntity> GetByPage(int pageIndex, int entriesByPage);
+        bool Create(TEntity todoDto);
+        bool Update(TEntity todoDto);
+        bool Delete(TEntity todoDto);
+        bool DeleteRange(IEnumerable<TEntity> todoList);
+        int GetCount();
     }
 }
