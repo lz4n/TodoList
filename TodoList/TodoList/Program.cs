@@ -1,5 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using System;
 using TodoList.Client.Pages;
 using TodoList.Components;
+using TodoList.Infraestructure;
+using TodoList.Models;
+using TodoList.Repository;
+using TodoList.UnitOfWork;
 
 namespace TodoList
 {
@@ -13,6 +19,16 @@ namespace TodoList
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
+
+            string? database = builder.Configuration.GetConnectionString("TodoDatabase");
+            builder.Services.AddDbContext<TodoDbContext>(options =>
+            {
+                options.UseSqlServer(database);
+            }
+);
+
+            builder.Services.AddScoped<IRepositoryBase<Todo>, TodoRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
             var app = builder.Build();
 
