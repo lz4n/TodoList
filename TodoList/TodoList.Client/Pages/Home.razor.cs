@@ -25,11 +25,6 @@ namespace TodoList.Client.Pages
         protected override void OnInitialized()
         {
             FillTodos();
-
-            if (todoRepository.GetCount() == 0)
-            {
-                page = 0;
-            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

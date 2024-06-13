@@ -9,6 +9,5 @@
         void Update(TEntity todoDto);
         void Delete(TEntity todoDto);
         void DeleteRange(IEnumerable<TEntity> todoList);
-        int GetCount();
     }
 }

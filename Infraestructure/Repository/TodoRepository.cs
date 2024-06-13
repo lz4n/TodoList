@@ -115,17 +115,6 @@ namespace Infraestructure.Repository
             }
         }
 
-        public int GetCount()
-        {
-            try
-            {
-                return _context.Todos.Count();
-            } catch (Exception)
-            {
-                throw new Exception("Error obteniendo la cantidad de Todos.");
-            }  
-        }
-
         private Todo GetById(Guid id)
         {
             return _context.Todos.Find(id)!;
