@@ -14,7 +14,7 @@ namespace Infraestructure.Repository
             _context = context;
         }
 
-        public bool Create(TodoDto todoDto)
+        public void Create(TodoDto todoDto)
         {
             try
             {
@@ -23,13 +23,30 @@ namespace Infraestructure.Repository
             }
             catch (Exception)
             {
-                return false;
+                throw new Exception("Error añadiendo Todo.");
             }
-
-            return true;
         }
 
-        public bool Delete(TodoDto todoDto)
+        public void AutoCreate(int count)
+        {
+            try
+            {
+                _context.Todos.RemoveRange(_context.Todos);
+              
+                for (int index = 0; index < count; index++)
+                {
+                    _context.Todos.Add(new Todo() { Title = $"Tarea número {index}", Description = $"Descripción de la tarea {index}" });
+                }
+                    
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error añadiendo Todo.");
+            }
+        }
+
+        public void Delete(TodoDto todoDto)
         {
             try
             {
@@ -38,13 +55,11 @@ namespace Infraestructure.Repository
 			}
             catch (Exception)
             {
-                return false;
+                throw new Exception("Error eliminando Todo.");
             }
-
-            return true;
         }
 
-        public bool DeleteRange(IEnumerable<TodoDto> todosDtoList)
+        public void DeleteRange(IEnumerable<TodoDto> todosDtoList)
         {
             try
             {
@@ -53,10 +68,8 @@ namespace Infraestructure.Repository
             }
             catch (Exception)
             {
-                return false;
-            }
-
-            return true;
+                throw new Exception("Error eliminando una lista de Todos.");
+            }           
         }
 
         public IEnumerable<TodoDto> GetAll()
@@ -67,7 +80,7 @@ namespace Infraestructure.Repository
             }
             catch (Exception)
             {
-                return new List<TodoDto>();
+                throw new Exception("Error obteniendo todos los Todos.");
             }
         }
 
@@ -79,18 +92,18 @@ namespace Infraestructure.Repository
             }
             catch (Exception)
             {
-                return new List<TodoDto>();
+                throw new Exception("Error obteniendo Todos por página.");
             }
         }
 
-        public bool Update(TodoDto todoDto)
+        public void Update(TodoDto todoDto)
         {
             try
             {
                 Todo todo = _context.Todos.Find(todoDto.Id);
                 if (todo == null)
                 {
-                    return false;
+                    return;
                 }
 
                 TodoDto.MapToEntity(todoDto, todo);
@@ -98,20 +111,24 @@ namespace Infraestructure.Repository
 			}
             catch (Exception)
             {
-                return false;
+                throw new Exception("Error actualizando Todo.");
             }
-
-            return true;
-        }
-
-        private Todo GetById(Guid id)
-        {
-            return _context.Todos.Find(id)!; 
         }
 
         public int GetCount()
         {
-            return _context.Todos.Count();
+            try
+            {
+                return _context.Todos.Count();
+            } catch (Exception)
+            {
+                throw new Exception("Error obteniendo la cantidad de Todos.");
+            }  
+        }
+
+        private Todo GetById(Guid id)
+        {
+            return _context.Todos.Find(id)!;
         }
     }
 }

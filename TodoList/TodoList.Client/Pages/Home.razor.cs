@@ -2,6 +2,7 @@
 using Domain.Dto;
 using Infraestructure.Repository;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -15,23 +16,14 @@ namespace TodoList.Client.Pages
         private IRepositoryBase<TodoDto> todoRepository { get; set; }
 
         private TodoDto todoModel = new TodoDto();
-        private IEnumerable<TodoDto> todoList = null;
+        private List<TodoDto> todoList = null;
 
-        private int page = 1, totalPages;
-        private bool IsPrevPageAvailable { get => page > 1; }
-        private bool IsNextPageAvailabe { get => page < totalPages; }
+        private string errorMessage = string.Empty;
+
+        private int page = 10;
 
         protected override void OnInitialized()
         {
-
-            /*if (todoRepository.GetCount() == 0)
-            {
-                for (int index = 0; index < 100000; index++)
-                {
-                    todoRepository.Create(new TodoDto() { Title = $"Tarea número {index}", Description = $"Descripción de la tarea {index}" });
-                }
-            }*/
-
             FillTodos();
 
             if (todoRepository.GetCount() == 0)
@@ -40,28 +32,56 @@ namespace TodoList.Client.Pages
             }
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await JS.InvokeVoidAsync("infiniteScroll.init", DotNetObjectReference.Create(this));
+            }
+        }
+
         private void FillTodos()
         {
-            todoList = todoRepository.GetByPage(page -1, EntriesPerPage);
-
-            totalPages = (int) Math.Ceiling((double) todoRepository.GetCount() / EntriesPerPage);
-
+            todoList = todoRepository.GetByPage(0, EntriesPerPage *page).ToList();
+   
             StateHasChanged();
         }
 
 		private void AddTodo()
 		{
+            if (string.IsNullOrWhiteSpace(todoModel.Title) || string.IsNullOrWhiteSpace(todoModel.Description))
+            {
+                errorMessage = "El título y la descripción no pueden estar vacíos.";
+                return;
+            }
+
             todoRepository.Create(todoModel);
 
             FillTodos();
-			todoModel = new TodoDto();
+
+            errorMessage = string.Empty;
+            todoModel = new TodoDto();
 		}
 
-        private void RemoveTodo(TodoDto todo) 
+        private void AutoGenerate()
+        {
+            page = 10;
+
+            todoRepository.AutoCreate(100000);
+
+            FillTodos();
+        }
+
+        private void RemoveTodo(TodoDto todo)
         {
             todoRepository.Delete(todo);
 
             FillTodos();
+        }
+
+        private void UpdateTodo(TodoDto todo) 
+        {
+            todoRepository.Update(todo);
         }
 
         private void RemoveSelectedTodos()
@@ -75,21 +95,15 @@ namespace TodoList.Client.Pages
         {
             todo.NextPhase();
 
-            todoRepository.Update(todo);
-
-            StateHasChanged();
+            UpdateTodo(todo);
         }
 
-        private void changePage(int offset)
+        [JSInvokable]
+        public void LoadMoreItems()
         {
-            if (page +offset > totalPages || page +offset < 1)
-            {
-                return;
-            }
+            todoList.AddRange(todoRepository.GetByPage(page++, EntriesPerPage));
 
-            page += offset;
-
-            FillTodos();
+            StateHasChanged();
         }
 
 
