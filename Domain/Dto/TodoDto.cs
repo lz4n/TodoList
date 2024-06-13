@@ -1,8 +1,9 @@
-﻿using TodoList.Models;
+﻿using Domain.Enums;
+using Domain.Models;
 
-namespace TodoList.Dto
+namespace Domain.Dto
 {
-	public class TodoDto
+    public class TodoDto
 	{
 		public Guid Id { get; set; } = Guid.NewGuid();
 		public string? Title { get; set; }

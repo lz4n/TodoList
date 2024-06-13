@@ -1,9 +1,9 @@
-﻿using System;
-using TodoList.Dto;
-using TodoList.Infraestructure;
-using TodoList.Models;
+﻿using Domain.Dto;
+using Domain.Models;
+using Infraestructure.Infraestructure;
 
-namespace TodoList.Repository
+
+namespace Infraestructure.Repository
 {
     public class TodoRepository : IRepositoryBase<TodoDto>
     {
@@ -63,7 +63,7 @@ namespace TodoList.Repository
         {
             try
             {
-                return _context.Todos.Select(x => TodoDto.MapFromEntity(x)!).ToList();
+                return _context.Todos.Select(x => TodoDto.MapFromEntity(x)!);
             }
             catch (Exception)
             {
@@ -75,7 +75,7 @@ namespace TodoList.Repository
         {
             try
             {
-                return _context.Todos.Skip(pageIndex *entriesByPage).Take(entriesByPage).Select(x => TodoDto.MapFromEntity(x)!).ToList();
+                return _context.Todos.Skip(pageIndex *entriesByPage).Take(entriesByPage).Select(x => TodoDto.MapFromEntity(x)!);
             }
             catch (Exception)
             {

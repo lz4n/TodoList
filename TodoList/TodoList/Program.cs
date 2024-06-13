@@ -1,11 +1,10 @@
+using Infraestructure;
+using Infraestructure.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using System;
 using TodoList.Client.Pages;
 using TodoList.Components;
-using TodoList.Dto;
-using TodoList.Infraestructure;
-using TodoList.Models;
-using TodoList.Repository;
+
 
 namespace TodoList
 {
@@ -20,13 +19,7 @@ namespace TodoList
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
 
-            string database = builder.Configuration.GetConnectionString("TodoDatabase")!;
-            builder.Services.AddDbContext<TodoDbContext>(options =>
-            {
-                options.UseSqlServer(database);
-            });
-
-            builder.Services.AddScoped<IRepositoryBase<TodoDto>, TodoRepository>();
+            builder.Services.AddInfrastructure(configuration: builder.Configuration);
 
             var app = builder.Build();
 
@@ -53,7 +46,7 @@ namespace TodoList
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
-                .AddAdditionalAssemblies(typeof(Counter).Assembly);
+                .AddAdditionalAssemblies(typeof(Home).Assembly);
 
             app.Run();
 

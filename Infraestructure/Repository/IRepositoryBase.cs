@@ -1,4 +1,4 @@
-﻿namespace TodoList.Repository
+﻿namespace Infraestructure.Repository
 {
     public interface IRepositoryBase<TEntity>
     { 

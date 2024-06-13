@@ -1,4 +1,6 @@
-﻿namespace TodoList.Models
+﻿using Domain.Enums;
+
+namespace Domain.Models
 {
     public class Todo
     {
@@ -7,13 +9,5 @@
         public string? Description { get; set; }
         public bool IsBlocked { get; set; } = false;
         public TodoPhase Phase { get; set; } = TodoPhase.PLANNED;
-    }
-
-    public enum TodoPhase
-    {
-        PLANNED,
-        STARTED,
-        IN_PROGRESS,
-        COMPLETED
     }
 }

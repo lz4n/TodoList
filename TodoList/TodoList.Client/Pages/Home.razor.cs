@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using TodoList.Dto;
-using TodoList.Models;
-using TodoList.Repository;
+﻿
+using Domain.Dto;
+using Infraestructure.Repository;
+using Microsoft.AspNetCore.Components;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
-namespace TodoList.Components.Pages
+namespace TodoList.Client.Pages
 {
     public partial class Home
     {
@@ -56,6 +57,13 @@ namespace TodoList.Components.Pages
 			todoModel = new TodoDto();
 		}
 
+        private void RemoveTodo(TodoDto todo) 
+        {
+            todoRepository.Delete(todo);
+
+            FillTodos();
+        }
+
         private void RemoveSelectedTodos()
         {
             todoRepository.DeleteRange(todoList.Where(x => x.IsSelected));
@@ -82,6 +90,16 @@ namespace TodoList.Components.Pages
             page += offset;
 
             FillTodos();
+        }
+
+
+        private string GetDisplayName(Enum enumValue)
+        {
+            return enumValue.GetType()
+                            .GetMember(enumValue.ToString())
+                            .First()
+                            .GetCustomAttribute<DisplayAttribute>()?
+                            .Name ?? enumValue.ToString();
         }
     }
 }

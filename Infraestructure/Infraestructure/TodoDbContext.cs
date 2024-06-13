@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using TodoList.Models;
+﻿using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace TodoList.Infraestructure
+namespace Infraestructure.Infraestructure
 {
     public class TodoDbContext : DbContext
     {
