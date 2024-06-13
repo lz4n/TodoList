@@ -74,8 +74,10 @@ namespace TodoList.Client.Pages
             FillTodos();
         }
 
-        private void UpdateTodo(TodoDto todo) 
+        private void ToggleBlockingTodo(TodoDto todo) 
         {
+            todo.IsBlocked = !todo.IsBlocked;
+
             todoRepository.Update(todo);
         }
 
@@ -90,7 +92,7 @@ namespace TodoList.Client.Pages
         {
             todo.NextPhase();
 
-            UpdateTodo(todo);
+            todoRepository.Update(todo);
         }
 
         [JSInvokable]

@@ -67,7 +67,7 @@ else
                     <td>@todoDto.Title</td>
                     <td>@todoDto.Description</td>
                     <td class="text-center">
-                        <input type="checkbox" @bind=todoDto.IsBlocked @onclick="() => UpdateTodo(todoDto)"/>
+                        <Button class="btn btn-primary" @onclick="() => ToggleBlockingTodo(todoDto)">@(todoDto.IsBlocked ? "Si" : "No")</Button>
                     </td>
                     <td class ="text-center">
                         <Button class="btn btn-primary btn-sm" @onclick="() => NextPhase(todoDto)" disabled="@(todoDto.IsBlocked || todoDto.Phase >= TodoPhase.COMPLETED)">@GetDisplayName(todoDto.Phase)</Button>
